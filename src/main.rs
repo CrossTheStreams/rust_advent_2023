@@ -1,18 +1,45 @@
 #![allow(dead_code)]
 
-use crate::day1::get_calibration_value;
+use clap::Parser;
+use crate::day1::{run_day_1_part_1};
 
 mod day1;
 
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::error::Error;
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// Day of Advent, a value 1 through 25
+    #[arg(short, long)]
+    day: u8,
 
-fn main() {
-    let file = File::open("inputs/day1.txt").expect("Failed to open file");
-    let reader = BufReader::new(file);
-    let lines: Vec<String> = reader.lines().map(|l| l.expect("Failed to read line")).collect();
-    let calibration_values: Vec<u32> = lines.iter().map(|l| get_calibration_value(l.to_string())).collect();
-    let answer: u32 = calibration_values.iter().sum();
-    println!("Part 1: This sum of the calibration values: {}", answer)
+    /// Part 1 or 2 Problem of the Day, value must be either 1 or 2
+    #[arg(short, long)]
+    part: u8,
+}
+
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let args = Args::parse();
+    let day = args.day;
+    let part = args.part;
+    match day {
+        1..=25 => (),
+        _ => return Err("--day must be a value 1..25".into())
+    }
+    match part {
+        1|2 => (),
+        _ => return Err("--part must be 1 or 2".into())
+    }
+
+    match (day, part) {
+        (1, 1) => {
+            run_day_1_part_1();
+        }
+        _ => {
+            println!("Haven't done that one yet 🎅☃️🎄")
+        }
+    }
+    Ok(())
 }
 
