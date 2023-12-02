@@ -14,25 +14,24 @@ pub fn run_day_1_part_1() -> () {
 }
 
 fn get_calibration_value_part1(line: String) -> u32 {
-    let mut first_digit: char = 'a';
-    let mut last_digit: char = 'a';
+    let mut first_digit: Option<char> = None;
+    let mut last_digit: Option<char> = None;
     for char in line.chars() {
-        let num = char.to_string().parse::<u32>();
-        if num.is_err() {
-            continue
-        }
-        first_digit = char;
-        break
+        if char.is_digit(10) {
+            first_digit = Some(char);
+            break
+        }    
     }
     for char in line.chars().rev() {
-        let num = char.to_string().parse::<u32>();
-        if num.is_err() {
-            continue
-        }
-        last_digit = char;
-        break
+        if char.is_digit(10) {
+            last_digit = Some(char);
+            break
+        }    
     }
-    let digit = [first_digit.to_string(), last_digit.to_string()].join(""); 
+    let digit = [
+        first_digit.unwrap_or('a').to_string(),
+        last_digit.unwrap_or('a').to_string()
+    ].join(""); 
     match digit.parse() {
         Ok(num) => num,
         Err(_) => 0
@@ -91,47 +90,45 @@ fn get_calibration_value_part2(line: String) -> u32 {
     // return that value.
     let mut chars_from_front: String = String::from("");
     let mut chars_from_back: String = String::from("");
-    let mut first_char: char = 'a';
-    let mut last_char: char = 'b';
+    let mut first_char: Option<char> = None;
+    let mut last_char: Option<char> = None;
     for char in line.chars() {
-        if first_char != 'a' {
+        if first_char.is_some() {
             break
         }
-        let num = char.to_string().parse::<u32>();
-        if num.is_err() {
-            chars_from_front += &char.to_string();
-            for (digit_word, digit_char) in &digits {
-                if chars_from_front.contains(digit_word) {
-                    first_char = *digit_char;
-                    break
-                }
-            }
-            continue
+        if char.is_digit(10) {
+            first_char = Some(char)
         }
-        first_char = char;
-        break
+        chars_from_front += &char.to_string();
+        for (digit_word, digit_char) in &digits {
+            if chars_from_front.contains(digit_word) {
+                first_char = Some(*digit_char);
+                break
+            }
+        }
     }
     for char in line.chars().rev() {
-        if last_char != 'b' {
+        if last_char.is_some() {
             break
         }
-        let num = char.to_string().parse::<u32>();
-        if num.is_err() {
-            // We need to arrange the wordy digits in the correct direction
-            // e.g. "nine" and not "enin"
-            chars_from_back = [char.to_string(), chars_from_back].join("");
-            for (digit_word, digit_char) in &digits {
-                if chars_from_back.contains(digit_word) {
-                    last_char = *digit_char;
-                    break
-                }
-            }
-            continue
+        if char.is_digit(10) {
+            last_char = Some(char);
+            break
         }
-        last_char = char;
-        break
+        // We need to arrange the wordy digits in the correct direction
+        // e.g. "nine" and not "enin"
+        chars_from_back = [char.to_string(), chars_from_back].join("");
+        for (digit_word, digit_char) in &digits {
+            if chars_from_back.contains(digit_word) {
+                last_char = Some(*digit_char);
+                break
+            }
+        }
     }
-    let digit = [first_char.to_string(), last_char.to_string()].join(""); 
+    let digit = [
+        first_char.unwrap_or('a').to_string(),
+        last_char.unwrap_or('a').to_string()
+    ].join(""); 
     match digit.parse() {
         Ok(num) => num,
         Err(_) => 0
