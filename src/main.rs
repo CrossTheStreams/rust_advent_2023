@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use clap::Parser;
-use crate::day1::{run_day_1_part_1};
+use crate::day1::{run_day_1_part_1, run_day_1_part_2};
 
 mod day1;
 
@@ -35,6 +35,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     match (day, part) {
         (1, 1) => {
             run_day_1_part_1();
+        },
+        (1, 2) => {
+            run_day_1_part_2();
         }
         _ => {
             println!("Haven't done that one yet 🎅☃️🎄")
