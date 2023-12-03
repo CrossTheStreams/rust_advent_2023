@@ -146,13 +146,16 @@ fn find_all_gear_ratios(schematic_lines: Vec<String>) -> Vec<u32> {
                 '0'..='9' => continue,
                 '.' => continue,
                 '*' => {
-                    // We've arrived at a symbol of some sort
-                    // Look for part numbers around this coordinate
+                    // We've arrived at a * symbol
+                    // It might be a gear, if we're next to exactly two part numbers
                     let part_numbers = find_part_numbers_around_coor(&schematic_lines, (i, j));
                     if part_numbers.len() == 2 {
+                        // There are exactly two part numbers!
+                        // The multiple of the part numbers is the gear ratio
                         let part_no1 = part_numbers.get(0).unwrap();
                         let part_no2 = part_numbers.get(1).unwrap();
                         let gear_ratio = part_no1 * part_no2;
+                        // Add it to the vector of gear ratios
                         gear_ratios.push(gear_ratio);
                     }
                 },
