@@ -27,8 +27,9 @@ struct Round {
 }
 
 // A round of the game, which is separated by a semicolon in each line of the input day2.txt
-// I got a little mixed up at first about the problem at first.
+// I got a little mixed up at first about the problem.
 // The cubes are put *back into the bag* after each round, so we simply check *the cube count of each round*.
+// If a round has more cubes than the allowed amounts, the game is impossible.
 impl Round {
     pub fn new() -> Self {
         return Self {
