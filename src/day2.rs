@@ -2,6 +2,8 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use regex::Regex;
 
+// Part 1
+
 pub fn run_day_2_part_1() -> () {
     let file = File::open("inputs/day2.txt").expect("Failed to open file");
     let reader = BufReader::new(file);
@@ -45,7 +47,7 @@ impl Game {
         }
     }
 
-    pub fn possible(&self) -> bool {
+    fn possible(&self) -> bool {
         for round in &self.rounds {
             if round.red < 13 && round.green < 14 && round.blue < 15 {
                 continue
@@ -53,6 +55,24 @@ impl Game {
             return false
         }
         return true
+    }
+
+    fn power(&self) -> u32 {
+        let mut red_min = 0;
+        let mut blue_min = 0;
+        let mut green_min = 0;
+        for round in &self.rounds {
+            if round.red > red_min {
+                red_min = round.red
+            }
+            if round.green > green_min {
+                green_min = round.green
+            }
+            if round.blue > blue_min {
+                blue_min = round.blue
+            }
+        }
+        return red_min * blue_min * green_min
     }
 }
 
@@ -140,4 +160,21 @@ fn test_sum_of_possible_games() {
     ];
     let sum = sum_of_possible_games(games);
     assert_eq!(8, sum)
+}
+
+// Part 2
+
+pub fn run_day_2_part_2() -> () {
+    let file = File::open("inputs/day2.txt").expect("Failed to open file");
+    let reader = BufReader::new(file);
+    let lines: Vec<String> = reader.lines().map(|l| l.expect("Failed to read line")).collect();
+    let games: Vec<Game> = lines.iter().map(|l| game_from_string(l)).collect();
+    let answer: u32 = games.iter().map(|g| g.power()).sum();
+    println!("Part 2: This is the sum of \"powers\" of all games: {}", answer)
+}
+
+#[test]
+fn test_game_power() {
+    let game = game_from_string("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green");
+    assert_eq!(48, game.power());
 }
