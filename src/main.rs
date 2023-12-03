@@ -1,9 +1,11 @@
 #![allow(dead_code)]
 
+mod day1;
+mod day2;
+
 use clap::Parser;
 use crate::day1::{run_day_1_part_1, run_day_1_part_2};
-
-mod day1;
+use crate::day2::run_day_2_part_1;
 
 use std::error::Error;
 #[derive(Parser, Debug)]
@@ -38,6 +40,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         },
         (1, 2) => {
             run_day_1_part_2();
+        },
+        (2, 1) => {
+            run_day_2_part_1();
         }
         _ => {
             println!("Haven't done that one yet 🎅☃️🎄")
