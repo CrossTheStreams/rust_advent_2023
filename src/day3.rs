@@ -122,8 +122,6 @@ fn test_find_all_part_numbers() {
     ];
     let part_numbers = find_all_part_numbers(schematic);
     let part_numbers_sum: u32 = part_numbers.iter().sum();
-    // This is directly from the example from the problem.
-    // Definitely could break down find_all_part_numbers into more focused functions, lol.
     assert_eq!(4361, part_numbers_sum);
 }
 
@@ -182,7 +180,5 @@ fn test_find_all_gear_ratios() {
     ];
     let gear_ratios = find_all_gear_ratios(schematic);
     let gear_ratios_sum: u32 = gear_ratios.iter().sum();
-    // This is directly from the example from the problem.
-    // Definitely could break down find_all_part_numbers into more focused functions, lol.
     assert_eq!(467835, gear_ratios_sum);
 }
