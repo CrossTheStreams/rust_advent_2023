@@ -84,7 +84,6 @@ fn count_of_scratchcards_won(stack: Vec<Card>) -> u32 {
     for card in &stack {
         card_counts.insert(card.number, 1);
     }
-    // I think this could be further improved with some concurrency stuff...
     for drawn_card in stack {
         // draw the card n times, for 1 (the card in the original deck) + (every time we've added the card from previous matches) 
         for (idx, _matched_num) in drawn_card.matching_nums.iter().enumerate() { 
