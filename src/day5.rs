@@ -210,3 +210,20 @@ fn test_calculate_location_number() {
         calculate_location_number(13, &seed_map_hash)
     );
 }
+
+// Part 2
+
+pub fn run_day_5_part_2() -> () {
+    let file: File = File::open("inputs/day5.txt").expect("Failed to open file");
+    let reader = BufReader::new(file);
+    let mut lines: Vec<String> = reader.lines().map(|l| l.expect("Failed to read line")).collect();
+    let seeds = parse_seeds(lines.remove(0));
+    let seed_map_hash = parse_maps(lines);
+    let mut location_nums: Vec<usize> = vec![];
+    for seed in seeds.iter() {
+        let loc_num = calculate_location_number(*seed, &seed_map_hash);
+        location_nums.push(loc_num)
+    }
+    let min_loc_num = location_nums.iter().min().unwrap();
+    println!("Part 1: The smallest location number among seeds in inputs/day5.txt ==> {}", min_loc_num)
+}
