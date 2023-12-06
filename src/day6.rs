@@ -25,12 +25,16 @@ pub fn run_day_6_part_1() -> () {
             distance: 1328
         },
     ];
+    println!("records:");
+    for record in &records {
+        println!("{:?}", record);
+    }
     let mut ways_to_beat_records: Vec<usize> = vec![];
     for record in &records {
         ways_to_beat_records.push(ways_to_beat_record(record));
     } 
     let answer: usize = ways_to_beat_records.into_iter().reduce(|acc, e| acc * e).unwrap();
-    println!("Part 1: Product of numbers of ways to win races inputs/day6.txt ==> {}", answer)
+    println!("Part 1: Product of numbers of ways to win races ==> {}", answer)
 }
 
 fn ways_to_beat_record(record: &BoatRaceRecord) -> usize {
@@ -71,9 +75,10 @@ fn test_ways_to_beat_record() {
 // Part 2
 
 pub fn run_day_6_part_2() -> () {
-    let answer = ways_to_beat_record(&BoatRaceRecord {
+    let record = BoatRaceRecord {
         time: 59796575,
         distance: 597123410321328
-    });
-    println!("Part 2: Product of numbers of ways to win races inputs/day6.txt ==> {}", answer)
+    };
+    let answer = ways_to_beat_record(&record);
+    println!("Part 2: Number to win this really long race {:?} ==> {}", record, answer)
 }
