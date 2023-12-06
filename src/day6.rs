@@ -1,8 +1,10 @@
 #[derive(Debug)]
 struct BoatRaceRecord {
-    time: u32,
-    distance: u32
+    time: usize,
+    distance: usize
 }
+
+// Part 1
 
 pub fn run_day_6_part_1() -> () {
     let records = vec![
@@ -23,17 +25,17 @@ pub fn run_day_6_part_1() -> () {
             distance: 1328
         },
     ];
-    let mut ways_to_beat_records: Vec<u32> = vec![];
+    let mut ways_to_beat_records: Vec<usize> = vec![];
     for record in &records {
         ways_to_beat_records.push(ways_to_beat_record(record));
     } 
-    let answer: u32 = ways_to_beat_records.into_iter().reduce(|acc, e| acc * e).unwrap();
+    let answer: usize = ways_to_beat_records.into_iter().reduce(|acc, e| acc * e).unwrap();
     println!("Part 1: Product of numbers of ways to win races inputs/day6.txt ==> {}", answer)
 }
 
-fn ways_to_beat_record(record: &BoatRaceRecord) -> u32 {
-    let mut min_milliseconds = 0 as u32;
-    let mut distance = 0 as u32;
+fn ways_to_beat_record(record: &BoatRaceRecord) -> usize {
+    let mut min_milliseconds = 0 as usize;
+    let mut distance = 0 as usize;
     // find the minimum number of milliseconds that yields a higher distance
     while distance <= record.distance {
         min_milliseconds += 1;
@@ -64,4 +66,14 @@ fn test_ways_to_beat_record() {
         9,
         ways_to_beat_record(&BoatRaceRecord { time: 30, distance: 200 })
     );
+}
+
+// Part 2
+
+pub fn run_day_6_part_2() -> () {
+    let answer = ways_to_beat_record(&BoatRaceRecord {
+        time: 59796575,
+        distance: 597123410321328
+    });
+    println!("Part 2: Product of numbers of ways to win races inputs/day6.txt ==> {}", answer)
 }
