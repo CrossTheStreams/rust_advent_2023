@@ -6,8 +6,10 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 
 use clap::Parser;
+use day7::run_day_7_part_1;
 use crate::day1::{run_day_1_part_1, run_day_1_part_2};
 use crate::day2::{run_day_2_part_1, run_day_2_part_2};
 use crate::day3::{run_day_3_part_1, run_day_3_part_2};
@@ -75,7 +77,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         },
         (6, 2) => {
             run_day_6_part_2();
-        }
+        },
+        (7, 1) => {
+            run_day_7_part_1();
+        },
         _ => {
             println!("Haven't done that one yet 🎅☃️🎄")
         }
