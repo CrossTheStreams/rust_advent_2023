@@ -9,13 +9,13 @@ mod day6;
 mod day7;
 
 use clap::Parser;
-use day7::run_day_7_part_1;
 use crate::day1::{run_day_1_part_1, run_day_1_part_2};
 use crate::day2::{run_day_2_part_1, run_day_2_part_2};
 use crate::day3::{run_day_3_part_1, run_day_3_part_2};
 use crate::day4::{run_day_4_part_1, run_day_4_part_2};
 use crate::day5::run_day_5_part_1;
 use crate::day6::{run_day_6_part_1, run_day_6_part_2};
+use crate::day7::{run_day_7_part_1, run_day_7_part_2};
 
 use std::error::Error;
 #[derive(Parser, Debug)]
@@ -80,6 +80,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         },
         (7, 1) => {
             run_day_7_part_1();
+        },
+        (7, 2) => {
+            run_day_7_part_2();
         },
         _ => {
             println!("Haven't done that one yet 🎅☃️🎄")

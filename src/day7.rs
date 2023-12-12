@@ -3,9 +3,11 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
+
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Copy, Clone)]
 pub enum Card {
-    Two = 2,
+    Joker = 1,
+    Two,
     Three,
     Four,
     Five,
@@ -13,18 +15,18 @@ pub enum Card {
     Seven,
     Eight,
     Nine,
-    Ten, 
-    J, 
+    Ten,
+    J,
     Q,
-    K, 
-    A, 
+    K,
+    A,
 }
 
 pub fn run_day_7_part_1() -> () {
     let file: File = File::open("inputs/day7.txt").expect("Failed to open file");
     let reader = BufReader::new(file);
     let lines: Vec<String> = reader.lines().map(|l| l.expect("Failed to read line")).collect();
-    let mut hands: Vec<Hand> = lines.into_iter().map(|l| parse_hand(l)).collect();
+    let mut hands: Vec<Hand> = lines.into_iter().map(|l| parse_hand_part_1(l)).collect();
     let mut winnings = 0;
     hands.sort();
     for (idx, mut hand) in hands.into_iter().enumerate() {
@@ -32,6 +34,20 @@ pub fn run_day_7_part_1() -> () {
         winnings += hand.winnings();
     }
     println!("Part 1: Winngings of all hands in inputs/day7.txt ==> {}", winnings);
+}
+
+pub fn run_day_7_part_2() -> () {
+    let file: File = File::open("inputs/day7.txt").expect("Failed to open file");
+    let reader = BufReader::new(file);
+    let lines: Vec<String> = reader.lines().map(|l| l.expect("Failed to read line")).collect();
+    let mut hands: Vec<Hand> = lines.into_iter().map(|l| parse_hand_part_2(l)).collect();
+    let mut winnings = 0;
+    hands.sort();
+    for (idx, mut hand) in hands.into_iter().enumerate() {
+        hand.rank = (idx + 1) as u32;
+        winnings += hand.winnings();
+    }
+    println!("Part 2: Winngings of all hands in inputs/day7.txt ==> {}", winnings);
 }
 
 
@@ -83,7 +99,15 @@ impl Ord for Hand {
     }
 }
 
-fn parse_hand(line: String) -> Hand {
+fn parse_hand_part_1(line: String) -> Hand {
+    parse_hand(line, false)
+}
+
+fn parse_hand_part_2(line: String) -> Hand {
+    parse_hand(line, true)
+}
+
+fn parse_hand(line: String, part_2_rules: bool) -> Hand {
     let mut hand = Hand {
         rank: 0,
         bid: 0,
@@ -106,7 +130,13 @@ fn parse_hand(line: String) -> Hand {
             '8' => Card::Eight,
             '9' => Card::Nine,
             'T' => Card::Ten,
-            'J' => Card::J,
+            'J' => {
+                if part_2_rules {
+                    Card::Joker
+                } else {
+                    Card::J
+                }
+            },
             'Q' => Card::Q,
             'K' => Card::K,
             'A' => Card::A,
@@ -115,6 +145,25 @@ fn parse_hand(line: String) -> Hand {
         hand.cards.push(card);
         *card_counts.entry(card).or_insert(0) += 1;
     }
+
+    // if we're playing with part 2 rules, we need to replace the counts
+    // of jokers with the count of the most common
+    // non-joker card
+    if part_2_rules {
+        if card_counts.get(&Card::Joker).is_some() {
+            let mut max_count = 0;
+            let mut max_card = Card::Joker;
+            for (card, count) in card_counts.iter() {
+                if *card != Card::Joker && *count > max_count {
+                    max_count = *count;
+                    max_card = *card;
+                }
+            }
+            let joker_count = card_counts.remove(&Card::Joker).unwrap();
+            card_counts.insert(max_card, max_count + joker_count);
+        }
+    }
+
     let mut card_count_nums: Vec<u32> = card_counts.values().map(|v| v.clone()).collect();
     card_count_nums.sort();
     let hand_type = match card_count_nums[..] {
@@ -164,13 +213,9 @@ fn test_parse_one_pair_hand() {
             ],
             hand_type: HandType::OnePair
         },
-        parse_hand(high_card_str)
+        parse_hand_part_1(high_card_str)
     ); 
 }
-
-// let two_pair_str = String::from("T55J5 684");
-// String::from("KTJJT 220"),
-// String::from("QQQJA 483"),
 
 #[test]
 fn test_parse_two_pair_hand() {
@@ -188,9 +233,11 @@ fn test_parse_two_pair_hand() {
             ],
             hand_type: HandType::TwoPair
         },
-        parse_hand(two_pair_str)
+        parse_hand_part_1(two_pair_str)
     ); 
 }
+
+// Tests for part 1 behavior
 
 #[test]
 fn test_parse_three_of_a_kind_hand() {
@@ -208,7 +255,7 @@ fn test_parse_three_of_a_kind_hand() {
             ],
             hand_type: HandType::ThreeOfAKind
         },
-        parse_hand(three_of_a_kind)
+        parse_hand_part_1(three_of_a_kind)
     ); 
 }
 
@@ -228,7 +275,7 @@ fn test_parse_full_house_hand() {
             ],
             hand_type: HandType::FullHouse
         },
-        parse_hand(full_house)
+        parse_hand_part_1(full_house)
     ); 
 }
 
@@ -249,7 +296,7 @@ fn test_parse_four_of_a_kind_hand() {
             ],
             hand_type: HandType::FourOfAKind
         },
-        parse_hand(four_of_a_kind)
+        parse_hand_part_1(four_of_a_kind)
     ); 
 }
 
@@ -270,7 +317,7 @@ fn test_parse_five_of_a_kind() {
             ],
             hand_type: HandType::FiveOfAKind
         },
-        parse_hand(full_house)
+        parse_hand_part_1(full_house)
     ); 
 }
 
@@ -292,7 +339,24 @@ fn test_compare_cards() {
     assert!(full_house2 > full_house1)
 }
 
-// #[test]
-// fn test_winnings() {
-//     let 
-// }
+// Tests for part 2 behavior
+
+#[test]
+fn test_parse_two_pair_hand_part_two() {
+    let four_of_a_kind = String::from("KTJJT 220");
+    assert_eq!(
+        Hand {
+            rank: 0,
+            bid: 220,
+            cards: vec![
+                Card::K,
+                Card::Ten,
+                Card::Joker,
+                Card::Joker,
+                Card::Ten,
+            ],
+            hand_type: HandType::FourOfAKind
+        },
+        parse_hand_part_2(four_of_a_kind)
+    );
+}
